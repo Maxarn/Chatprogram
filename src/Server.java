@@ -4,23 +4,24 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class Server {
+    public static int PORT_NUMBER = 1337;
    public static void main(String[] args) {
         try {
-            System.out.println("Server local address: " + InetAddress.getLocalHost().getHostAddress());
+            System.out.println(String.format("Server address: %s, Port: %s", InetAddress.getLocalHost().getHostAddress(),PORT_NUMBER));
         } catch (UnknownHostException e) {
             e.getMessage();
         }
 
-       /* try{
-            ServerSocket ss = new ServerSocket(1337);
-            Socket s = ss.accept();
+//        try{
+//            ServerSocket ss = new ServerSocket(PORT_NUMBER);
+//            Socket s = ss.accept();
+//
+//
+//            s.close();
+//        }catch (Exception e) {
+//            // Doot
+//        }
 
-
-            s.close();
-        }catch (Exception e) {
-            // Doot
-        }
-        */
     }
 
 }
