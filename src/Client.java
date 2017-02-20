@@ -1,71 +1,38 @@
-import java.io.*;
-import java.net.*;
 
 
-public class Client extends Thread {
-    private static String USERNAME = "fuckface";
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 
-    private static String SERVER = "192.168.0.100";
-    private static int PORT = 1337;
-    private static Socket socket = null;
-
-    public static void createSocket() throws IOException {
-        if (socket == null) {
-            socket = new Socket(SERVER, PORT);
-        }
-    }
-
-
-    public static void sendMessage(String message) throws IOException {
-        Socket socket = null;
-        socket = new Socket(SERVER, PORT);
-        OutputStreamWriter osw = new OutputStreamWriter(socket.getOutputStream(), "UTF-8");
-        osw.write(message, 0, message.length());
-
-
-        socket.close();
-
-
-    }
-
-    public void run() {
-        String message = "";
-        try {
-
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            Socket client = new Socket(SERVER, PORT);
-            while(!message.toLowerCase().equals("quit")) {
-
-                OutputStream outToServer = client.getOutputStream();
-                System.out.print("\nMessage to server: ");
-                message = br.readLine();
-
-                DataOutputStream out = new DataOutputStream(outToServer);
-                out.writeUTF(String.format("%s: %s",USERNAME, message));
-
-                InputStream inFromServer = client.getInputStream();
-                DataInputStream in = new DataInputStream(inFromServer);
-
-                System.out.println("SERVER SENDS: " + in.readUTF());
-
-            }
-            System.out.println("Closing socket.");
-            client.close();
-
-        }catch(IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
+public class Client {
+//    private static String HOST = "192.168.0.100";
     public static void main(String[] args) {
+        if (args.length > 0) {
+            String HOST = args[0];
+            try (Socket socket = new Socket(HOST, 1337)) {
+                System.out.println("Connected to "+HOST+":1337");
+                PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
+                System.out.println("Writing message");
+                writer.write("LOL\r\n");
+                writer.flush();
 
-        Thread t = new Client();
-        t.start();
-
-
+                System.out.println("Reading message");
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+                writer.close();
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else{
+            // TODO kukat gui kanske !? !? ?!
+        }
     }
-
 }
