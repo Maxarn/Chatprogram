@@ -7,23 +7,24 @@ public class Client extends Thread {
 
     private static String SERVER = "192.168.0.100";
     private static int PORT = 1337;
+    private static Socket socket = null;
+
+    public static void createSocket() throws IOException {
+        if (socket == null) {
+            socket = new Socket(SERVER, PORT);
+        }
+    }
 
 
     public static void sendMessage(String message) throws IOException {
-        InputStream is = new ByteArrayInputStream( message.getBytes( ) );
-
-        Socket client = new Socket(SERVER, PORT);
-
-        OutputStream outToServer = client.getOutputStream();
-
-        DataOutputStream out = new DataOutputStream(outToServer);
-        out.writeUTF(String.format("%s: %s",USERNAME, is));
-
-        InputStream inFromServer = client.getInputStream();
-        DataInputStream in = new DataInputStream(inFromServer);
+        Socket socket = null;
+        socket = new Socket(SERVER, PORT);
+        OutputStreamWriter osw = new OutputStreamWriter(socket.getOutputStream(), "UTF-8");
+        osw.write(message, 0, message.length());
 
 
-        client.close();
+        socket.close();
+
 
     }
 
@@ -46,10 +47,10 @@ public class Client extends Thread {
                 InputStream inFromServer = client.getInputStream();
                 DataInputStream in = new DataInputStream(inFromServer);
 
-                System.out.println(in.readUTF());
+                System.out.println("SERVER SENDS: " + in.readUTF());
 
             }
-            System.out.println("Closing socket. GGWP.");
+            System.out.println("Closing socket.");
             client.close();
 
         }catch(IOException e) {

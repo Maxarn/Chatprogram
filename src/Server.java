@@ -1,4 +1,7 @@
 
+import javafx.application.Application;
+import javafx.stage.Stage;
+
 import java.io.*;
 import java.net.*;
 import java.util.Date;
@@ -26,11 +29,11 @@ public class Server extends Thread{
 
             server = serverSocket.accept();
             LOGGER.log(Level.INFO, String.format("Just connected to %s", server.getRemoteSocketAddress()));
-            while (true) {
+
+            while (RUNSERVER) {
                 try {
                     DataInputStream in = new DataInputStream(server.getInputStream());
                     DataOutputStream out = new DataOutputStream(server.getOutputStream());
-
                     String clientMessage = in.readUTF();
                     if (clientMessage != null){
                         LOGGER.log(Level.INFO, String.format("%s\n", clientMessage));
@@ -76,12 +79,14 @@ public class Server extends Thread{
         LOGGER.setLevel(Level.INFO);
 
         try {
+            System.out.println("Starting thread");
             t = new Server(PORT);
             t.start();
-            System.out.println("Started thread");
+
         }catch(IOException e) {
             e.printStackTrace();
         }
     }
+
 
 }
