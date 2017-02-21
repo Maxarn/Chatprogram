@@ -10,6 +10,7 @@ public class Client {
 //    private static String HOST = "192.168.0.100";
     public static void main(String[] args) {
         if (args.length > 0) {
+            String message = (args.length > 1) ? args[1] : "LOOOOOOOL";
             String HOST = args[0];
             try (Socket socket = new Socket(HOST, 1337)) {
                 System.out.println("Connected to "+HOST+":1337");
@@ -17,7 +18,7 @@ public class Client {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
                 System.out.println("Writing message");
-                writer.write("LOL\r\n");
+                writer.write(message + "\r\n");
                 writer.flush();
 
                 System.out.println("Reading message");

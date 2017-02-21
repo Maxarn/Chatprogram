@@ -7,16 +7,17 @@ import java.util.List;
 
 public class Server {
     private static final int PORT = 1337;
-    private static List<SocketDoots> clients = new ArrayList<>();
+    private static List<SocketHandler> clients = new ArrayList<>();
 
     public static void main(String[] args) {
         try {
             ServerSocket ss = new ServerSocket(PORT);
             Socket socket;
             while (true) {
+                System.out.println("LIST SIEZ: " + clients.size());
                 socket = ss.accept();
                 System.out.println("Doot connected from " + socket.getInetAddress());
-                SocketDoots sh = new SocketDoots(socket);
+                SocketHandler sh = new SocketHandler(socket);
                 clients.add(sh);
                 Thread t = new Thread(sh);
                 t.start();
@@ -27,7 +28,7 @@ public class Server {
     }
 
     public synchronized static void writeMessage(String message) {
-        for (SocketDoots sh : clients) {
+        for (SocketHandler sh : clients) {
             System.out.println("Writing " + message + " to client " + sh.getName());
             sh.write(message);
         }
