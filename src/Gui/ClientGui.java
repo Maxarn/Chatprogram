@@ -40,6 +40,7 @@ public class ClientGui extends Application {
     public static TextArea serverResponse;
 
     private Socket serverSocket;
+    private ClientListener cl;
 
     private boolean validateInput(String ip, String port, String username, TextArea textArea){
         boolean ggwp = true;
@@ -153,7 +154,7 @@ public class ClientGui extends Application {
         try {
             createReaderAndWriter();
 
-            ClientListener cl = new ClientListener(serverSocket);
+            cl = new ClientListener(serverSocket);
             Thread t = new Thread(cl);
             t.start();
 
@@ -185,6 +186,8 @@ public class ClientGui extends Application {
         try {
             writer.close();
             reader.close();
+            serverSocket.close();
+            cl.closeSocket();
 
         } catch (IOException e) {
             serverResponse.appendText(e.getMessage() + "\n");

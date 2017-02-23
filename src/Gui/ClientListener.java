@@ -8,7 +8,7 @@ import java.net.Socket;
 /**
  * Created by suddkuk on 2017-02-23.
  */
-public  class ClientListener implements Runnable{
+public class ClientListener implements Runnable{
     Socket socket;
     BufferedReader reader;
 
@@ -21,11 +21,16 @@ public  class ClientListener implements Runnable{
             }
             reader.close();
         }catch (IOException e){
-            e.printStackTrace();
+//            e.printStackTrace();
+//            Do nothing, just die.
         }
     }
     public ClientListener(Socket socket) throws IOException {
         this.socket = socket;
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    }
+    public void closeSocket() throws IOException {
+        this.reader.close();
+        this.socket.close();
     }
 }
