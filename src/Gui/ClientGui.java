@@ -92,6 +92,7 @@ public class ClientGui extends Application {
         TextField usernameField = new TextField("Dootface");
         TextArea textArea = new TextArea();
         Button button = new Button("Login");
+        button.getStyleClass().add("button");
         button.setOnAction(event -> {
             if(validateInput(ipField.getText(), portField.getText(), usernameField.getText(), textArea)){
                 if(createSocket(textArea)) {
@@ -112,6 +113,7 @@ public class ClientGui extends Application {
         bp.setBottom(textArea);
 
         Scene scene = new Scene(bp);
+        scene.getStylesheets().add("gui/gui.css");
         primaryStage.setScene(scene);
 
     }
@@ -149,6 +151,7 @@ public class ClientGui extends Application {
         bp.setTop(topPane);
 
         Scene scene = new Scene(bp);
+        scene.getStylesheets().add("gui/gui.css");
         primaryStage.setScene(scene);
 
         try {
