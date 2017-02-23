@@ -3,6 +3,7 @@ package Gui;/**
  */
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -36,6 +37,7 @@ public class ClientGui extends Application {
     private PrintWriter writer  = null;
     private BufferedReader reader = null;
     private BufferedReader userInuput  = null;
+    public static TextArea serverResponse;
 
     private Socket serverSocket;
 
@@ -116,28 +118,45 @@ public class ClientGui extends Application {
     private void chatScene(Stage primaryStage){
         BorderPane bp = new BorderPane();
         BorderPane bottomPane = new BorderPane();
-        TextArea serverResponse = new TextArea();
+        BorderPane topPane = new BorderPane();
+        serverResponse = new TextArea();
+        serverResponse.setEditable(false);
         TextArea clientInput = new TextArea();
         Button button = new Button("Send");
         button.setPrefSize(70,70);
         button.setOnAction(event -> {
-            String s = String.format("%s: %s",USERNAME, clientInput.getText());
-            sendMessage(s,serverResponse);
-//            System.out.println(clientInput.getText());
+            try {
+                sendMessage(clientInput.getText());
+                clientInput.clear();
+            } catch (IOException e) {
+                serverResponse.appendText(e.getMessage() + "\n");
+            }
         });
+        Button quitButton = new Button("Quit");
+        quitButton.setOnAction(event -> {
+            closeProgram();
+            Platform.exit();
+        });
+
+        topPane.setRight(quitButton);
 
         bottomPane.setCenter(clientInput);
         bottomPane.setRight(button);
 
         bp.setBottom(bottomPane);
         bp.setCenter(serverResponse);
+        bp.setTop(topPane);
 
         Scene scene = new Scene(bp);
         primaryStage.setScene(scene);
 
         try {
+            createReaderAndWriter();
 
-            startClientListener();
+            ClientListener cl = new ClientListener(serverSocket);
+            Thread t = new Thread(cl);
+            t.start();
+
 
         } catch (IOException e) {
             serverResponse.appendText(e.getMessage() + "\n");
@@ -145,26 +164,31 @@ public class ClientGui extends Application {
 
     }
 
-    private void sendMessage(String message, TextArea serverResponse){
+    private void sendMessage(String message) throws IOException{
+        String s = String.format("%s: %s\r\n",USERNAME,message);
+        writer.write(s);
+        writer.flush();
+    }
+
+    private void createReaderAndWriter() throws IOException {
         try {
             writer = new PrintWriter(serverSocket.getOutputStream(), true);
             reader = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
-            writer.write(message);
+
         } catch (IOException e) {
             serverResponse.appendText(e.getMessage() + "\n");
-        }finally {
-            writer.close();
-            try {
-                reader.close();
-            } catch (IOException e) {
-                serverResponse.appendText(e.getMessage() + "\n");
-            }
         }
     }
-    private void startClientListener() throws IOException {
-        ClientListener cl = new ClientListener(serverSocket);
-        Thread t = new Thread(cl);
-        t.start();
+
+    // Close all the streams and stuff
+    private void closeProgram(){
+        try {
+            writer.close();
+            reader.close();
+
+        } catch (IOException e) {
+            serverResponse.appendText(e.getMessage() + "\n");
+        }
     }
 
     public static void main(String[] args) {

@@ -17,7 +17,7 @@ public  class ClientListener implements Runnable{
         String line;
         try{
             while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+                ClientGui.serverResponse.appendText((line + "\n"));
             }
             reader.close();
         }catch (IOException e){
