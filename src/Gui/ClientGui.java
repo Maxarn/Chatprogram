@@ -92,7 +92,7 @@ public class ClientGui extends Application {
         TextField usernameField = new TextField("Dootface");
         TextArea textArea = new TextArea();
         Button button = new Button("Login");
-        button.getStyleClass().add("button");
+
         button.setOnAction(event -> {
             if(validateInput(ipField.getText(), portField.getText(), usernameField.getText(), textArea)){
                 if(createSocket(textArea)) {
@@ -100,6 +100,16 @@ public class ClientGui extends Application {
                 }
             }
         });
+
+        // CSS
+        ipLabel.getStyleClass().add("");
+        portLabel.getStyleClass().add("");
+        usernameLabel.getStyleClass().add("");
+        ipField.getStyleClass().add("");
+        portField.getStyleClass().add("");
+        usernameField.getStyleClass().add("");
+        button.getStyleClass().add("button");
+
 
         gp.add(ipLabel,0,0);
         gp.add(portLabel,0,1);
@@ -140,6 +150,12 @@ public class ClientGui extends Application {
             closeProgram();
             Platform.exit();
         });
+
+        // CSS
+        serverResponse.getStyleClass().add("");
+        clientInput.getStyleClass().add("");
+        button.getStyleClass().add("button");
+
 
         topPane.setRight(quitButton);
 
