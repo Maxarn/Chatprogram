@@ -108,6 +108,7 @@ public class ClientGui extends Application {
         ipField.getStyleClass().add("");
         portField.getStyleClass().add("");
         usernameField.getStyleClass().add("");
+        textArea.getStyleClass().add("");
         button.getStyleClass().add("button");
 
 
