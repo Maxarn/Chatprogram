@@ -9,12 +9,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import javax.xml.soap.Text;
+import java.beans.EventHandler;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -136,11 +139,23 @@ public class ClientGui extends Application {
         serverResponse = new TextArea();
         serverResponse.setEditable(false);
         TextArea clientInput = new TextArea();
+        clientInput.setOnKeyPressed(event -> {
+            if (event.getCode().equals(KeyCode.ENTER)){
+                try {
+                    sendMessage(clientInput.getText().trim());
+                    clientInput.clear();
+                } catch (IOException e) {
+                    serverResponse.appendText(e.getMessage() + "\n");
+                }
+                // Dont add a newline to clientInput textarea.
+                event.consume();
+            }
+        });
         Button button = new Button("Send");
         button.setPrefSize(70,70);
         button.setOnAction(event -> {
             try {
-                sendMessage(clientInput.getText());
+                sendMessage(clientInput.getText().trim());
                 clientInput.clear();
             } catch (IOException e) {
                 serverResponse.appendText(e.getMessage() + "\n");
@@ -182,6 +197,14 @@ public class ClientGui extends Application {
         } catch (IOException e) {
             serverResponse.appendText(e.getMessage() + "\n");
         }
+
+    }
+
+    private void validateMessage(String message) throws IOException{
+        if (!message.isEmpty()){
+            sendMessage(message);
+        }
+
 
     }
 
