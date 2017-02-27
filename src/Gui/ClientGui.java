@@ -142,7 +142,7 @@ public class ClientGui extends Application {
         clientInput.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER)){
                 try {
-                    sendMessage(clientInput.getText().trim());
+                    validateMessage(clientInput.getText().trim());
                     clientInput.clear();
                 } catch (IOException e) {
                     serverResponse.appendText(e.getMessage() + "\n");
@@ -155,7 +155,7 @@ public class ClientGui extends Application {
         button.setPrefSize(70,70);
         button.setOnAction(event -> {
             try {
-                sendMessage(clientInput.getText().trim());
+                validateMessage(clientInput.getText().trim());
                 clientInput.clear();
             } catch (IOException e) {
                 serverResponse.appendText(e.getMessage() + "\n");
@@ -204,8 +204,6 @@ public class ClientGui extends Application {
         if (!message.isEmpty()){
             sendMessage(message);
         }
-
-
     }
 
     private void sendMessage(String message) throws IOException{
