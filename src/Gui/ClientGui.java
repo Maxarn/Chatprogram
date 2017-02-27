@@ -90,7 +90,7 @@ public class ClientGui extends Application {
         Label ipLabel = new Label("IP");
         Label portLabel = new Label("Port");
         Label usernameLabel = new Label("Username");
-        TextField ipField = new TextField("192.168.0.100");
+        TextField ipField = new TextField("192.168.0.108");
         TextField portField = new TextField("1337");
         TextField usernameField = new TextField("Dootface");
         TextArea textArea = new TextArea();
@@ -127,7 +127,7 @@ public class ClientGui extends Application {
         bp.setBottom(textArea);
 
         Scene scene = new Scene(bp);
-        scene.getStylesheets().add("gui/gui.css");
+        scene.getStylesheets().add("Gui/gui.css");
         primaryStage.setScene(scene);
 
     }
@@ -183,7 +183,7 @@ public class ClientGui extends Application {
         bp.setTop(topPane);
 
         Scene scene = new Scene(bp);
-        scene.getStylesheets().add("gui/gui.css");
+        scene.getStylesheets().add("Gui/gui.css");
         primaryStage.setScene(scene);
 
         try {
