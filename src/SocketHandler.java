@@ -29,6 +29,8 @@ public class SocketHandler implements Runnable {
                 System.out.println("Read " + line + " from socket");
                 Server.writeMessage(line);
             }
+            
+            Server.clearClient(this);
         } catch (IOException e) {
             e.printStackTrace();
         }

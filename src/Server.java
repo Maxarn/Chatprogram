@@ -43,4 +43,8 @@ public class Server {
             writer.flush();
         }
     }
+    
+    public static void clearClient(SocketHandler client) {
+        clients.remove(client);
+    }
 }
