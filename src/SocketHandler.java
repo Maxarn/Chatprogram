@@ -32,6 +32,7 @@ public class SocketHandler implements Runnable {
             
             Server.clearClient(this);
         } catch (IOException e) {
+            Server.clearClient(this);
             e.printStackTrace();
         }
     }

@@ -45,6 +45,7 @@ public class Server {
     }
     
     public static void clearClient(SocketHandler client) {
-        clients.remove(client);
+        if (clients.contains(client))
+            clients.remove(client);
     }
 }
