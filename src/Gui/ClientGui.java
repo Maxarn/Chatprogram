@@ -90,7 +90,7 @@ public class ClientGui extends Application {
         Label ipLabel = new Label("IP");
         Label portLabel = new Label("Port");
         Label usernameLabel = new Label("Username");
-        TextField ipField = new TextField("192.168.0.108");
+        TextField ipField = new TextField("localhost");
         TextField portField = new TextField("1337");
         TextField usernameField = new TextField("Dootface");
         TextArea textArea = new TextArea();
@@ -244,5 +244,13 @@ public class ClientGui extends Application {
 
         loginScene(primaryStage);
         primaryStage.show();
+
+
+    }
+
+    @Override
+    public void stop(){
+        closeProgram();
+        System.exit(0);
     }
 }
