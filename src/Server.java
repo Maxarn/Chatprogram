@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -8,7 +9,8 @@ import java.util.List;
 public class Server {
     private static final int PORT = 1337;
     private static List<SocketHandler> clients = new ArrayList<>();
-
+    private static List<String> history = new ArrayList<>();
+    
     public static void main(String[] args) {
         try {
             ServerSocket ss = new ServerSocket(PORT);
@@ -28,9 +30,17 @@ public class Server {
     }
 
     public synchronized static void writeMessage(String message) {
+        history.add(message);
         for (SocketHandler sh : clients) {
             System.out.println("Writing " + message + " to client " + sh.getName());
             sh.write(message);
+        }
+    }
+    
+    public static void writeHistory(PrintWriter writer) {
+        for (String historyLine : history) {
+            writer.write(historyLine + "\r\n");
+            writer.flush();
         }
     }
 }

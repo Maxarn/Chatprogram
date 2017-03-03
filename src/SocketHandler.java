@@ -21,7 +21,9 @@ public class SocketHandler implements Runnable {
             System.out.println("Creating reader/writer");
             writer = new PrintWriter(socket.getOutputStream(), true);
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
+            
+            Server.writeHistory(writer);
+            
             String line;
             while ((line = reader.readLine()) != null) {
                 System.out.println("Read " + line + " from socket");
