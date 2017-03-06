@@ -3,13 +3,13 @@ package Gui;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.Socket;
+import javax.net.ssl.SSLSocket;
 
 /**
  * Created by suddkuk on 2017-02-23.
  */
 public class ClientListener implements Runnable{
-    Socket socket;
+    SSLSocket socket;
     BufferedReader reader;
 
     @Override
@@ -25,7 +25,7 @@ public class ClientListener implements Runnable{
 //            Do nothing, just die.
         }
     }
-    public ClientListener(Socket socket) throws IOException {
+    public ClientListener(SSLSocket socket) throws IOException {
         this.socket = socket;
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }

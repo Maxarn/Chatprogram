@@ -25,6 +25,8 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 
 /**
  * TODO:
@@ -42,9 +44,12 @@ public class ClientGui extends Application {
     private BufferedReader userInuput  = null;
     public static TextArea serverResponse;
 
-    private Socket serverSocket;
+    private SSLSocket serverSocket;
     private ClientListener cl;
 
+    private final static String PASSWORD = "dootdoot";
+    private final static String KEYSTORE_PATH = "keyDoot";
+    
     private boolean validateInput(String ip, String port, String username, TextArea textArea){
         boolean ggwp = true;
         if(ip.isEmpty()) {
@@ -75,7 +80,10 @@ public class ClientGui extends Application {
     }
     private boolean createSocket(TextArea textArea)  {
         try {
-            serverSocket = new Socket(HOST, PORT);
+            SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+            serverSocket = (SSLSocket) sslsocketfactory.createSocket(HOST, PORT);
+            
+//            serverSocket = new Socket(HOST, PORT);
         } catch (IOException e) {
             textArea.appendText(e.getMessage() + "\n");
             return false;
@@ -236,6 +244,9 @@ public class ClientGui extends Application {
     }
 
     public static void main(String[] args) {
+        System.setProperty("javax.net.ssl.trustStore", KEYSTORE_PATH);
+        System.setProperty("javax.net.ssl.trustStorePassword", PASSWORD);
+        
         launch(args);
     }
 

@@ -27,7 +27,6 @@ public class BookSecureServer {
             // it from disk. The passphrase is stored as a char[] array
             // so it can be wiped from memory quickly rather than
             // waiting for a garbage collector.
-//            char[] password = "";
             ks.load(new FileInputStream("keyDoot"), password);
             kmf.init(ks, password);
             context.init(kmf.getKeyManagers(), null, null);
