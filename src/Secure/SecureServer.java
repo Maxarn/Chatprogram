@@ -1,20 +1,17 @@
 package Secure;
 
-import javax.net.ssl.SSLServerSocket;
-import javax.net.ssl.SSLServerSocketFactory;
-import javax.net.ssl.SSLSocket;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.io.*;
+import java.net.*;
+import java.security.*;
+import java.security.cert.CertificateException;
+import java.util.Arrays;
+import javax.net.ssl.*;
 
 
-/**
- * Created by suddkuk on 2017-03-03.
- */
 public class SecureServer {
+    private final static String algorithm = "SSL";
+    private final static char[] PASSWORD = "dootdoot".toCharArray();
+    private final static String KEYPATH = "keyDoot";
     private static int PORT = 1337;
 
     public static void main(String[] args) {
@@ -22,30 +19,81 @@ public class SecureServer {
             try {
                 PORT = Integer.parseInt(args[0]);
             }catch (NumberFormatException e){
-                System.out.println(String.format("Invalid port number: %s, using %s", args[0], PORT));
+                System.out.println(String.format("Invalid port number: %s, shutting down.", args[0]));
+                System.exit(-1);
             }
         }
 
-        SSLServerSocketFactory ssf;
-        Socket socket = null;
+
+
         try {
-            SSLServerSocketFactory sslserversocketfactory =
-                    (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
-            SSLServerSocket sslserversocket =
-                    (SSLServerSocket) sslserversocketfactory.createServerSocket(PORT);
-            SSLSocket sslsocket = (SSLSocket) sslserversocket.accept();
+            SSLContext context = SSLContext.getInstance(algorithm);
 
-            InputStream inputstream = sslsocket.getInputStream();
-            InputStreamReader inputstreamreader = new InputStreamReader(inputstream);
-            BufferedReader bufferedreader = new BufferedReader(inputstreamreader);
+            // The reference implementation only supports X.509 keys
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
 
-            String string = null;
-            while ((string = bufferedreader.readLine()) != null) {
-                System.out.println(string);
-                System.out.flush();
+            // Oracle's default kind of key store
+            KeyStore ks = KeyStore.getInstance("JKS");
+
+            // For security, every key store is encrypted with a
+            // passphrase that must be provided before we can load
+            // it from disk. The passphrase is stored as a char[] array
+            // so it can be wiped from memory quickly rather than
+            // waiting for a garbage collector.
+            /**
+             *  char[] password = System.console().readPassword();
+             */
+
+            ks.load(new FileInputStream(KEYPATH), PASSWORD);
+            kmf.init(ks, PASSWORD);
+            context.init(kmf.getKeyManagers(), null, null);
+
+            // wipe the password
+            Arrays.fill(PASSWORD, '0');
+            SSLServerSocketFactory factory
+                    = context.getServerSocketFactory();
+            SSLServerSocket server
+                    = (SSLServerSocket) factory.createServerSocket(PORT);
+
+            // add anonymous (non-authenticated) cipher suites
+            String[] supported = server.getSupportedCipherSuites();
+            String[] anonCipherSuitesSupported = new String[supported.length];
+            int numAnonCipherSuitesSupported = 0;
+            for (int i = 0; i < supported.length; i++) {
+                if (supported[i].indexOf("_anon_") > 0) {
+                    anonCipherSuitesSupported[numAnonCipherSuitesSupported++] =
+                            supported[i];
+                }
             }
-        } catch (Exception exception) {
-            exception.printStackTrace();
+            String[] oldEnabled = server.getEnabledCipherSuites();
+            String[] newEnabled = new String[oldEnabled.length
+                    + numAnonCipherSuitesSupported];
+            System.arraycopy(oldEnabled, 0, newEnabled, 0, oldEnabled.length);
+            System.arraycopy(anonCipherSuitesSupported, 0, newEnabled,
+                    oldEnabled.length, numAnonCipherSuitesSupported);
+            server.setEnabledCipherSuites(newEnabled);
+
+            // Now all the set up is complete and we can focus
+            // on the actual communication.
+            while (true) {
+
+                // This socket will be secure,
+                // but there's no indication of that in the code!
+                try (Socket theConnection = server.accept()) {
+                    InputStream in = theConnection.getInputStream();
+                    int c;
+                    while ((c = in.read()) != -1) {
+                        System.out.write(c);
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        } catch (IOException | KeyManagementException
+                | KeyStoreException | NoSuchAlgorithmException
+                | CertificateException | UnrecoverableKeyException ex) {
+            ex.printStackTrace();
         }
     }
 }
+
