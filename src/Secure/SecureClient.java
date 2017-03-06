@@ -14,7 +14,12 @@ public class SecureClient  implements Runnable{
     private SSLSocket socket;
     BufferedReader reader;
 
+    private static final String keyPath = "keyDoot";
+    private static final String password = "dootdoot";
+    
     public static void main(String[] args) {
+        System.setProperty("javax.net.ssl.trustStore", keyPath);
+        System.setProperty("javax.net.ssl.trustStorePassword", password);
 
         try {
             SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
