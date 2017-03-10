@@ -102,7 +102,7 @@ public class ClientGui extends Application {
         TextField portField = new TextField("1337");
         TextField usernameField = new TextField("Dootface");
         TextArea textArea = new TextArea();
-        Button button = new Button("Login");
+        Button button = new Button("LOGIN");
 
         button.setOnAction(event -> {
             if(validateInput(ipField.getText(), portField.getText(), usernameField.getText(), textArea)){
@@ -113,12 +113,12 @@ public class ClientGui extends Application {
         });
 
         // CSS
-        ipLabel.getStyleClass().add("");
-        portLabel.getStyleClass().add("");
-        usernameLabel.getStyleClass().add("");
-        ipField.getStyleClass().add("");
-        portField.getStyleClass().add("");
-        usernameField.getStyleClass().add("");
+        ipLabel.getStyleClass().add("login-label");
+        portLabel.getStyleClass().add("login-label");
+        usernameLabel.getStyleClass().add("login-label");
+        ipField.getStyleClass().add("login-field");
+        portField.getStyleClass().add("login-field");
+        usernameField.getStyleClass().add("login-field");
         textArea.getStyleClass().add("");
         button.getStyleClass().add("button");
 
@@ -129,7 +129,7 @@ public class ClientGui extends Application {
         gp.add(ipField,1,0);
         gp.add(portField,1,1);
         gp.add(usernameField,1,2);
-        gp.add(button,0,3);
+        gp.add(button,4,3);
 
         bp.setCenter(gp);
         bp.setBottom(textArea);

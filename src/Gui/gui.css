@@ -1,3 +1,17 @@
-.button{
-  -fx-background-color: #DFB951;
+.button {
+    -fx-background-color: #13d641;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 5px 15px 5px 15px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.login-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 5px 15px 5px 15px;
+}
+
+.login-field {
+    -fx-margin: 50px;
 }
