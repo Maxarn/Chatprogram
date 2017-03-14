@@ -31,12 +31,11 @@ public class SocketHandler implements Runnable {
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith(REGISTER_KEY)) {
                     String[] register = line.substring(REGISTER_KEY.length(), line.length() - 1).split(" ");
-                    
                     if (Server.registerUser(register[0], register[1])) {
                         this.username = register[0];
                         System.out.println("Registered user " + this.username);
                     }
-                    
+
                 }else {
                     System.out.println("Read " + line + " from socket");
                     Server.writeMessage(line);

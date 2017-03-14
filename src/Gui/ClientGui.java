@@ -41,7 +41,7 @@ public class ClientGui extends Application {
     private BufferedReader userInuput  = null;
     public static TextArea serverResponse;
 
-    private SSLSocket serverSocket;
+    private SSLSocket serverSocket = null;
     private ClientListener cl;
 
     private final static String PASSWORD = "dootdoot";
@@ -80,27 +80,29 @@ public class ClientGui extends Application {
         return ggwp;
     }
     private boolean createSocket(TextArea textArea)  {
-        try {
-            SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-            serverSocket = (SSLSocket) sslsocketfactory.createSocket(HOST, PORT);
-            
+        if( serverSocket == null) {
+            try {
+                SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+                serverSocket = (SSLSocket) sslsocketfactory.createSocket(HOST, PORT);
+
 //            serverSocket = new Socket(HOST, PORT);
-        } catch (IOException e) {
-            textArea.appendText(e.getMessage() + "\n");
-            return false;
+            } catch (IOException e) {
+                textArea.appendText(e.getMessage() + "\n");
+                return false;
+            }
         }
         return true;
-
     }
     private boolean registerUser(String ip, String port, String username, String password, TextArea textArea){
         boolean ggwp = true;
         if(ggwp){
             return true;
         }
+        return false;
     }
 
     private boolean loginUser(String ip, String port, String username, String password, TextArea textArea){
-
+        return false;
     }
 
     private void loginScene(Stage primaryStage){
@@ -116,12 +118,12 @@ public class ClientGui extends Application {
         PasswordField passwordField = new PasswordField();
         TextArea textArea = new TextArea();
         Button loginbutton = new Button("LOGIN");
-        Button registerButton = new Button("LOGIN");
+        Button registerButton = new Button("REGISTER");
 
         loginbutton.setOnAction(event -> {
             if(validateInput(ipField.getText(), portField.getText(), usernameField.getText(), passwordField.getText(), textArea)) {
-                if (loginUser(ipField.getText(), portField.getText(), usernameField.getText(), passwordField.getText(), textArea)) {
-                    if (createSocket(textArea)) {
+                if (createSocket(textArea)) {
+                    if (loginUser(ipField.getText(), portField.getText(), usernameField.getText(), passwordField.getText(), textArea)) {
                         chatScene(primaryStage);
                     }
                 }
@@ -129,8 +131,10 @@ public class ClientGui extends Application {
         });
         registerButton.setOnAction(event -> {
             if(validateInput(ipField.getText(), portField.getText(), usernameField.getText(), passwordField.getText(), textArea)) {
-                if (registerUser(ipField.getText(), portField.getText(), usernameField.getText(), passwordField.getText(), textArea)) {
-                    //DOOOOOOOOT
+                if (createSocket(textArea)) {
+                    if (registerUser(ipField.getText(), portField.getText(), usernameField.getText(), passwordField.getText(), textArea)) {
+                        //DOOOOOOOOT
+                    }
                 }
             }
         });
@@ -139,20 +143,26 @@ public class ClientGui extends Application {
         ipLabel.getStyleClass().add("login-label");
         portLabel.getStyleClass().add("login-label");
         usernameLabel.getStyleClass().add("login-label");
+        passwordLabel.getStyleClass().add("login-label");
         ipField.getStyleClass().add("login-field");
         portField.getStyleClass().add("login-field");
         usernameField.getStyleClass().add("login-field");
+        passwordField.getStyleClass().add("login-field");
         textArea.getStyleClass().add("");
         loginbutton.getStyleClass().add("button");
+        registerButton.getStyleClass().add("button");
 
 
         gp.add(ipLabel,0,0);
         gp.add(portLabel,0,1);
         gp.add(usernameLabel,0,2);
+        gp.add(passwordLabel,0,3);
         gp.add(ipField,1,0);
         gp.add(portField,1,1);
         gp.add(usernameField,1,2);
-        gp.add(loginbutton,4,3);
+        gp.add(passwordField,1,3);
+        gp.add(loginbutton,4,4);
+        gp.add(registerButton,5,4);
 
         bp.setCenter(gp);
         bp.setBottom(textArea);
