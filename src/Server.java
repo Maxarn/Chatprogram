@@ -8,9 +8,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocket;
@@ -26,6 +24,7 @@ public class Server {
     
     private final static char[] PASSWORD = "dootdoot".toCharArray();
     private final static String KEYSTORE_PATH = "keyDoot";
+    public HashMap registeredUsers = new HashMap<String, String>();
     
     public static void main(String[] args) {
         try {

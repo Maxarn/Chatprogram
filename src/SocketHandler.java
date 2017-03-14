@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class SocketHandler implements Runnable {
+    private final String REGISTER_KEY = "REGISTER";
+
     private String name;
     private Socket socket;
     private PrintWriter writer;
@@ -26,8 +28,14 @@ public class SocketHandler implements Runnable {
             
             String line;
             while ((line = reader.readLine()) != null) {
-                System.out.println("Read " + line + " from socket");
-                Server.writeMessage(line);
+                if (line.startsWith(REGISTER_KEY)) {
+                    String[] register = line.substring(REGISTER_KEY.length(), line.length() - 1).split(" ");
+
+                }else {
+                    System.out.println("Read " + line + " from socket");
+                    Server.writeMessage(line);
+                }
+
             }
             
             Server.clearClient(this);

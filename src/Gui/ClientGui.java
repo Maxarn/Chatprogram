@@ -5,10 +5,7 @@ package Gui;/**
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Border;
@@ -50,7 +47,7 @@ public class ClientGui extends Application {
     private final static String PASSWORD = "dootdoot";
     private final static String KEYSTORE_PATH = "keyDoot";
     
-    private boolean validateInput(String ip, String port, String username, TextArea textArea){
+    private boolean validateInput(String ip, String port, String username, String password, TextArea textArea){
         boolean ggwp = true;
         if(ip.isEmpty()) {
             textArea.appendText("IP cannot be empty.\n");
@@ -58,6 +55,10 @@ public class ClientGui extends Application {
         }
         if (username.isEmpty()) {
             textArea.appendText("Username cannot be empty.\n");
+            ggwp = false;
+        }
+        if (password.isEmpty()) {
+            textArea.appendText("Password cannot be empty.\n");
             ggwp = false;
         }
         if (!port.isEmpty()) {
@@ -91,6 +92,16 @@ public class ClientGui extends Application {
         return true;
 
     }
+    private boolean registerUser(String ip, String port, String username, String password, TextArea textArea){
+        boolean ggwp = true;
+        if(ggwp){
+            return true;
+        }
+    }
+
+    private boolean loginUser(String ip, String port, String username, String password, TextArea textArea){
+
+    }
 
     private void loginScene(Stage primaryStage){
         GridPane gp = new GridPane();
@@ -98,16 +109,28 @@ public class ClientGui extends Application {
         Label ipLabel = new Label("IP");
         Label portLabel = new Label("Port");
         Label usernameLabel = new Label("Username");
+        Label passwordLabel = new Label("Password");
         TextField ipField = new TextField("localhost");
         TextField portField = new TextField("1337");
         TextField usernameField = new TextField("Dootface");
+        PasswordField passwordField = new PasswordField();
         TextArea textArea = new TextArea();
-        Button button = new Button("LOGIN");
+        Button loginbutton = new Button("LOGIN");
+        Button registerButton = new Button("LOGIN");
 
-        button.setOnAction(event -> {
-            if(validateInput(ipField.getText(), portField.getText(), usernameField.getText(), textArea)){
-                if(createSocket(textArea)) {
-                    chatScene(primaryStage);
+        loginbutton.setOnAction(event -> {
+            if(validateInput(ipField.getText(), portField.getText(), usernameField.getText(), passwordField.getText(), textArea)) {
+                if (loginUser(ipField.getText(), portField.getText(), usernameField.getText(), passwordField.getText(), textArea)) {
+                    if (createSocket(textArea)) {
+                        chatScene(primaryStage);
+                    }
+                }
+            }
+        });
+        registerButton.setOnAction(event -> {
+            if(validateInput(ipField.getText(), portField.getText(), usernameField.getText(), passwordField.getText(), textArea)) {
+                if (registerUser(ipField.getText(), portField.getText(), usernameField.getText(), passwordField.getText(), textArea)) {
+                    //DOOOOOOOOT
                 }
             }
         });
@@ -120,7 +143,7 @@ public class ClientGui extends Application {
         portField.getStyleClass().add("login-field");
         usernameField.getStyleClass().add("login-field");
         textArea.getStyleClass().add("");
-        button.getStyleClass().add("button");
+        loginbutton.getStyleClass().add("button");
 
 
         gp.add(ipLabel,0,0);
@@ -129,7 +152,7 @@ public class ClientGui extends Application {
         gp.add(ipField,1,0);
         gp.add(portField,1,1);
         gp.add(usernameField,1,2);
-        gp.add(button,4,3);
+        gp.add(loginbutton,4,3);
 
         bp.setCenter(gp);
         bp.setBottom(textArea);
