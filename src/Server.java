@@ -24,7 +24,7 @@ public class Server {
     
     private final static char[] PASSWORD = "dootdoot".toCharArray();
     private final static String KEYSTORE_PATH = "keyDoot";
-    public HashMap registeredUsers = new HashMap<String, String>();
+    public static HashMap registeredUsers = new HashMap<String, String>();
     
     public static void main(String[] args) {
         try {
@@ -100,5 +100,14 @@ public class Server {
     public static void clearClient(SocketHandler client) {
         if (clients.contains(client))
             clients.remove(client);
+    }
+    
+    public static boolean registerUser(String username, String password) {
+        if (registeredUsers.containsKey(username)) {
+            return false;
+        } else {
+            registeredUsers.put(username, password);
+            return true;
+        }
     }
 }
