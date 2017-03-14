@@ -105,19 +105,16 @@ public class ClientGui extends Application {
         return true;
     }
     
-    private void registerUser(String ip, String port, String username, String password, TextArea textArea){
+    private void registerUser(String username, String password){
 
         writer.write(REGISTER_KEY + username + " " + password + "\r\n");
         writer.flush();
-        
-//        if(cl.login_successfull){
-//            return true;
-//        }
-//        return false;
     }
 
-    private boolean loginUser(String ip, String port, String username, String password, TextArea textArea){
-        return false;
+    private void loginUser(String username, String password){
+
+        writer.write(LOGIN_KEY + username + " " + password + "\r\n");
+        writer.flush();
     }
 
     private void loginScene(Stage primaryStage){
@@ -138,20 +135,14 @@ public class ClientGui extends Application {
         loginbutton.setOnAction(event -> {
             if(validateInput(ipField.getText(), portField.getText(), usernameField.getText(), passwordField.getText(), textArea)) {
                 if (createSocket(textArea)) {
-                    if (loginUser(ipField.getText(), portField.getText(), usernameField.getText(), passwordField.getText(), textArea)) {
-                        chatScene(primaryStage);
-                    }
+                    loginUser(usernameField.getText(), passwordField.getText());
                 }
             }
         });
         registerButton.setOnAction(event -> {
             if(validateInput(ipField.getText(), portField.getText(), usernameField.getText(), passwordField.getText(), textArea)) {
                 if (createSocket(textArea)) {
-                    registerUser(ipField.getText(), portField.getText(), usernameField.getText(), passwordField.getText(), textArea);
-                    
-//                    if (cl.login_successfull) {
-//                        chatScene(primaryStage);
-//                    }
+                    registerUser(usernameField.getText(), passwordField.getText());
                 }
             }
         });
@@ -187,32 +178,15 @@ public class ClientGui extends Application {
         Scene scene = new Scene(bp);
         scene.getStylesheets().add("Gui/gui.css");
         primaryStage.setScene(scene);
-
-        Task task = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                while(!isCancelled()) {
-                    if (cl != null && cl.login_successfull) {
-                        break;
-                    }
-                }
-                System.out.println("Chat scene change");
-                chatScene(primaryStage);
-                return null;
-            }
-        };
-        Thread th = new Thread(task);
-        th.setDaemon(true);
-        th.start();
     }
 
     private void chatScene(Stage primaryStage){
         BorderPane bp = new BorderPane();
         BorderPane bottomPane = new BorderPane();
         BorderPane topPane = new BorderPane();
-        serverResponse = new TextArea();
-        serverResponse.setEditable(false);
-        serverResponse.setWrapText(true);
+//        serverResponse = new TextArea();
+//        serverResponse.setEditable(false);
+//        serverResponse.setWrapText(true);
         TextArea clientInput = new TextArea();
         clientInput.setWrapText(true);
         clientInput.setOnKeyPressed(event -> {
@@ -244,7 +218,7 @@ public class ClientGui extends Application {
         });
 
         // CSS
-        serverResponse.getStyleClass().add("");
+//        serverResponse.getStyleClass().add("");
         clientInput.getStyleClass().add("");
         button.getStyleClass().add("button");
 
@@ -324,6 +298,32 @@ public class ClientGui extends Application {
         loginScene(primaryStage);
         primaryStage.show();
 
+        Task task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                while(!isCancelled()) {
+                    
+                    if (cl != null && cl.login_successfull) {
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                chatScene(primaryStage);
+                            }
+                        });
+                        break;
+                    }
+                }
+                return null;
+            }
+        };
+        Thread th = new Thread(task);
+        th.setDaemon(true);
+        th.start();
+        
+        serverResponse = new TextArea();
+        serverResponse.setEditable(false);
+        serverResponse.setWrapText(true);
+        serverResponse.getStyleClass().add("");
     }
 
     @Override

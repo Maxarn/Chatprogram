@@ -14,7 +14,7 @@ public  class ClientListener implements Runnable{
     public void run() {
         System.out.println("Reading message");
         String line;
-        try{
+        try {
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
             }
