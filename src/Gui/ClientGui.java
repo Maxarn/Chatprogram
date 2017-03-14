@@ -146,7 +146,9 @@ public class ClientGui extends Application {
         BorderPane topPane = new BorderPane();
         serverResponse = new TextArea();
         serverResponse.setEditable(false);
+        serverResponse.setWrapText(true);
         TextArea clientInput = new TextArea();
+        clientInput.setWrapText(true);
         clientInput.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER)){
                 try {
