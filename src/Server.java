@@ -103,7 +103,6 @@ public class Server {
         if (clients.contains(client))
             clients.remove(client);
     }
-
     
     public static boolean registerUser(String username, String password) {
         if (registeredUsers.containsKey(username)) {
@@ -111,6 +110,16 @@ public class Server {
         } else {
             registeredUsers.put(username, password);
             return true;
+        }
+    }
+    
+    public static boolean loginUser(String username, String password) {
+        if (registeredUsers.containsKey(username) &&
+            registeredUsers.get(username).equals(password)) {
+            
+            return true;
+        } else {
+            return false;
         }
     }
 }

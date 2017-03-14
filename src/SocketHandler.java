@@ -6,6 +6,7 @@ import java.net.Socket;
 
 public class SocketHandler implements Runnable {
     private final String REGISTER_KEY = "REGISTER";
+    private final String LOGIN_KEY = "LOGIN";
 
     private String name;
     private Socket socket;
@@ -36,7 +37,14 @@ public class SocketHandler implements Runnable {
                         System.out.println("Registered user " + this.username);
                     }
 
-                }else {
+                } else if (line.startsWith(LOGIN_KEY)) {
+                    String[] login = line.substring(LOGIN_KEY.length(), line.length() - 1).split(" ");
+                    if (Server.loginUser(login[0], login[1])) {
+                        this.username = login[0];
+                        System.out.println("User " + this.username + " logged in.");
+                    }
+                    
+                } else {
                     System.out.println("Read " + line + " from socket");
                     Server.writeMessage(line);
                 }
