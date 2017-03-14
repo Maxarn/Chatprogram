@@ -8,7 +8,7 @@ import javax.net.ssl.SSLSocket;
 /**
  * Created by suddkuk on 2017-02-23.
  */
-public class ClientListener implements Runnable{
+public class ClientListener implements Runnable {
     private final String LOGIN_RESPONSE_KEY = "LOGIN_SUCCESSFUL";
     public boolean login_successfull = false;
     
@@ -22,6 +22,7 @@ public class ClientListener implements Runnable{
             while ((line = reader.readLine()) != null) {
                 if (line.equals(LOGIN_RESPONSE_KEY)) {
                     this.login_successfull = true;
+                    
                 } else {
                     ClientGui.serverResponse.appendText((line + "\n"));
                 }
@@ -37,6 +38,7 @@ public class ClientListener implements Runnable{
         this.socket = socket;
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
+    
     public void closeSocket() throws IOException {
         this.reader.close();
         this.socket.close();

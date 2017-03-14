@@ -22,6 +22,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import javafx.concurrent.Task;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
@@ -147,9 +148,10 @@ public class ClientGui extends Application {
             if(validateInput(ipField.getText(), portField.getText(), usernameField.getText(), passwordField.getText(), textArea)) {
                 if (createSocket(textArea)) {
                     registerUser(ipField.getText(), portField.getText(), usernameField.getText(), passwordField.getText(), textArea);
-                    if (cl.login_successfull) {
-                        chatScene(primaryStage);
-                    }
+                    
+//                    if (cl.login_successfull) {
+//                        chatScene(primaryStage);
+//                    }
                 }
             }
         });
@@ -186,6 +188,22 @@ public class ClientGui extends Application {
         scene.getStylesheets().add("Gui/gui.css");
         primaryStage.setScene(scene);
 
+        Task task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                while(!isCancelled()) {
+                    if (cl != null && cl.login_successfull) {
+                        break;
+                    }
+                }
+                System.out.println("Chat scene change");
+                chatScene(primaryStage);
+                return null;
+            }
+        };
+        Thread th = new Thread(task);
+        th.setDaemon(true);
+        th.start();
     }
 
     private void chatScene(Stage primaryStage){
@@ -305,7 +323,6 @@ public class ClientGui extends Application {
 
         loginScene(primaryStage);
         primaryStage.show();
-
 
     }
 
