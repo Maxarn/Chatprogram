@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class SocketHandler implements Runnable {
+    private final String LOGIN_RESPONSE_KEY = "LOGIN_SUCCESSFUL";
     private final String REGISTER_KEY = "REGISTER";
     private final String LOGIN_KEY = "LOGIN";
 
@@ -35,6 +36,7 @@ public class SocketHandler implements Runnable {
                     if (Server.registerUser(register[0], register[1])) {
                         this.username = register[0];
                         System.out.println("Registered user " + this.username);
+                        this.write(LOGIN_RESPONSE_KEY);
                     }
 
                 } else if (line.startsWith(LOGIN_KEY)) {
@@ -42,6 +44,7 @@ public class SocketHandler implements Runnable {
                     if (Server.loginUser(login[0], login[1])) {
                         this.username = login[0];
                         System.out.println("User " + this.username + " logged in.");
+                        this.write(LOGIN_RESPONSE_KEY);
                     }
                     
                 } else {

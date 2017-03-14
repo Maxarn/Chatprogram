@@ -9,6 +9,9 @@ import javax.net.ssl.SSLSocket;
  * Created by suddkuk on 2017-02-23.
  */
 public class ClientListener implements Runnable{
+    private final String LOGIN_RESPONSE_KEY = "LOGIN_SUCCESSFUL";
+    public boolean login_successfull = false;
+    
     SSLSocket socket;
     BufferedReader reader;
 
@@ -17,7 +20,12 @@ public class ClientListener implements Runnable{
         String line;
         try{
             while ((line = reader.readLine()) != null) {
-                ClientGui.serverResponse.appendText((line + "\n"));
+                if (line.equals(LOGIN_RESPONSE_KEY)) {
+                    this.login_successfull = true;
+                } else {
+                    ClientGui.serverResponse.appendText((line + "\n"));
+                }
+                System.out.println("Line read from server: " + line);
             }
             reader.close();
         }catch (IOException e){

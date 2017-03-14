@@ -33,6 +33,9 @@ import javax.net.ssl.SSLSocketFactory;
 
 
 public class ClientGui extends Application {
+    private final String REGISTER_KEY = "REGISTER";
+    private final String LOGIN_KEY = "LOGIN";
+    
     private String USERNAME;
     private String HOST;
     private int PORT;
@@ -79,11 +82,18 @@ public class ClientGui extends Application {
         }
         return ggwp;
     }
+    
     private boolean createSocket(TextArea textArea)  {
         if( serverSocket == null) {
             try {
                 SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
                 serverSocket = (SSLSocket) sslsocketfactory.createSocket(HOST, PORT);
+
+                createReaderAndWriter();
+                
+                cl = new ClientListener(serverSocket);
+                Thread t = new Thread(cl);
+                t.start();
 
 //            serverSocket = new Socket(HOST, PORT);
             } catch (IOException e) {
@@ -93,12 +103,16 @@ public class ClientGui extends Application {
         }
         return true;
     }
-    private boolean registerUser(String ip, String port, String username, String password, TextArea textArea){
-        boolean ggwp = true;
-        if(ggwp){
-            return true;
-        }
-        return false;
+    
+    private void registerUser(String ip, String port, String username, String password, TextArea textArea){
+
+        writer.write(REGISTER_KEY + username + " " + password + "\r\n");
+        writer.flush();
+        
+//        if(cl.login_successfull){
+//            return true;
+//        }
+//        return false;
     }
 
     private boolean loginUser(String ip, String port, String username, String password, TextArea textArea){
@@ -132,8 +146,9 @@ public class ClientGui extends Application {
         registerButton.setOnAction(event -> {
             if(validateInput(ipField.getText(), portField.getText(), usernameField.getText(), passwordField.getText(), textArea)) {
                 if (createSocket(textArea)) {
-                    if (registerUser(ipField.getText(), portField.getText(), usernameField.getText(), passwordField.getText(), textArea)) {
-                        //DOOOOOOOOT
+                    registerUser(ipField.getText(), portField.getText(), usernameField.getText(), passwordField.getText(), textArea);
+                    if (cl.login_successfull) {
+                        chatScene(primaryStage);
                     }
                 }
             }
@@ -229,17 +244,17 @@ public class ClientGui extends Application {
         scene.getStylesheets().add("Gui/gui.css");
         primaryStage.setScene(scene);
 
-        try {
-            createReaderAndWriter();
-
-            cl = new ClientListener(serverSocket);
-            Thread t = new Thread(cl);
-            t.start();
-
-
-        } catch (IOException e) {
-            serverResponse.appendText(e.getMessage() + "\n");
-        }
+//        try {
+//            createReaderAndWriter();
+//
+//            cl = new ClientListener(serverSocket);
+//            Thread t = new Thread(cl);
+//            t.start();
+//
+//
+//        } catch (IOException e) {
+//            serverResponse.appendText(e.getMessage() + "\n");
+//        }
 
     }
 
