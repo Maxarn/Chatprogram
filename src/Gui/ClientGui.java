@@ -7,30 +7,16 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-
-import javax.xml.soap.Text;
-import java.beans.EventHandler;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import javafx.concurrent.Task;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
-
-/**
- * TODO:
- *      1 thread listen for server response
- *      1 thread listen for messaege to send
- */
 
 
 public class ClientGui extends Application {
@@ -236,17 +222,6 @@ public class ClientGui extends Application {
         scene.getStylesheets().add("Gui/gui.css");
         primaryStage.setScene(scene);
 
-//        try {
-//            createReaderAndWriter();
-//
-//            cl = new ClientListener(serverSocket);
-//            Thread t = new Thread(cl);
-//            t.start();
-//
-//
-//        } catch (IOException e) {
-//            serverResponse.appendText(e.getMessage() + "\n");
-//        }
 
     }
 
